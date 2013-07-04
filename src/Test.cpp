@@ -8,16 +8,19 @@
 #include <repast_hpc/Point.h>
 #include <repast_hpc/NCDataSetBuilder.h>
 
+using namespace std;
+using namespace repast;
 
-class TestAgent: public repast::Agent {
+
+class TestAgent: public Agent {
 
 private:
-	repast::AgentId _id;
+	AgentId _id;
 	int _state;
 
 public:
 
-	TestAgent(repast::AgentId id, int state);
+	TestAgent(AgentId id, int state);
 	virtual ~TestAgent();
 
 	int state() const {
@@ -28,11 +31,11 @@ public:
 		_state = val;
 	}
 
-	repast::AgentId& getId () {
+	AgentId& getId () {
 		return _id;
 	}
 
-	const repast::AgentId& getId () const {
+	const AgentId& getId () const {
 		return _id;
 	}
 
@@ -49,10 +52,10 @@ struct TestAgentPackage {
 		ar& state;
 	}
 
-	repast::AgentId id;
+	AgentId id;
 	int state;
 
-	repast::AgentId getId() const {
+	AgentId getId() const {
 		return id;
 	}
 
@@ -70,10 +73,10 @@ private:
 	int rank;
 
 public:
-	repast::SharedContext<TestAgent> agents;
-	repast::SharedNetwork<TestAgent, TestEdge>* net;
-	repast::SharedGrids<TestAgent>::SharedWrappedGrid* grid;
-	repast::DataSet* dataSet;
+	SharedContext<TestAgent> agents;
+	SharedNetwork<TestAgent, TestEdge>* net;
+	SharedGrids<TestAgent>::SharedWrappedGrid* grid;
+	DataSet* dataSet;
 
 	Model();
 	virtual~ Model();
