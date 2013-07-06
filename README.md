@@ -8,11 +8,24 @@ http://repast.sourceforge.net/repast_hpc.html
 Setup
 -----
 
-In addition to `cpp` and `make`, you need to install Boost and NetCDF. For
+In addition to `cpp` and `make`, you need to install Boost and Open MPI. For
 Ubuntu:
 
     $ sudo apt-get install libboost-all-dev
+    $ sudo apt-get install openmpi-bin
+
+You also need netCDF-3. This installs netCDF-4, which seems to work for
+compiling Repast, but officiall netCDF-3 is required (see below):
+
     $ sudo apt-get install libnetcdf-dev
+
+Installing netCDF-3 from sources:
+
+    http://www.unidata.ucar.edu/downloads/netcdf/ftp/netcdf-3.6.3.tar.gz
+
+You might also need to install HDF5:
+
+    $ sudo apt-get install libhdf5-dev
 
 Then install Repast HPC according to its installation instructions. Running
 `make` for version 1.0.1 might result in an a number of errors (using Ubuntu
@@ -28,7 +41,7 @@ files:
     src/repast_hpc/DirectedVertex.h
     src/repast_hpc/UndirectedVertex.h
 
-zombie and rumor errors:
+Errors in example applications:
 
     zombie_model-Human.o: undefined reference to symbol [...]
     rumor_model-RumorModel.o: undefined reference to symbol [...]
