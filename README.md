@@ -1,25 +1,26 @@
 repasthpc-test
 ==============
 
-This is some code to test the Repast HPC:
+This is some code to test Repast HPC:
 http://repast.sourceforge.net/repast_hpc.html
 
 
 Setup
 -----
 
-In addition to `cpp` and `make`, you need to install Boost and Open MPI. For
-Ubuntu:
+In addition to `cpp` and `make`, you need to install Boost and Open MPI. These
+are the commands for Ubuntu:
 
     $ sudo apt-get install libboost-all-dev
     $ sudo apt-get install openmpi-bin
 
-You also need netCDF-3. This installs netCDF-4, which seems to work for
-compiling Repast, but officiall netCDF-3 is required (see below):
+You also need netCDF-3. The following command installs netCDF-4 from the Ubuntu
+repositories, which seems to work for compiling Repast, but officially netCDF-3
+is required (see below):
 
     $ sudo apt-get install libnetcdf-dev
 
-Installing netCDF-3 from sources:
+To install netCDF-3, you have to compile it manually from the sources:
 
     http://www.unidata.ucar.edu/downloads/netcdf/ftp/netcdf-3.6.3.tar.gz
 
@@ -31,7 +32,7 @@ Then install Repast HPC according to its installation instructions. Running
 `make` for version 1.0.1 might result in an a number of errors (using Ubuntu
 13.04 and possibly other operating systems).
 
-getItems error:
+This is the first error you might experience:
 
     error: 'getItems' was not declared in this scope [...]
 
@@ -41,7 +42,7 @@ files:
     src/repast_hpc/DirectedVertex.h
     src/repast_hpc/UndirectedVertex.h
 
-Errors in example applications:
+The two example applications that come with Repast HPC might also cause errors:
 
     zombie_model-Human.o: undefined reference to symbol [...]
     rumor_model-RumorModel.o: undefined reference to symbol [...]
@@ -55,4 +56,5 @@ to the end of the line starting with `rumor_model_LDADD = ` in the file
 Status
 ------
 
-The current code compiles, but does not do anything yet...
+The test code of this repository compiles, but doesn't do anything interesting
+at this point. More to come...
