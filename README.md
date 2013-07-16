@@ -51,10 +51,3 @@ This is resolved by adding ` $(BOOST_SYSTEM_LIBS)` to the end of the line
 starting with `zombie_model_LDADD = ` in the file `src/zombie/Makefile.in` and
 to the end of the line starting with `rumor_model_LDADD = ` in the file
 `src/rumor/Makefile.in`.
-
-
-Status
-------
-
-The test code of this repository compiles, but doesn't do anything interesting
-at this point. More to come...
