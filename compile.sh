@@ -9,9 +9,9 @@ mpicxx -L/usr/lib -L/usr/local/lib src/Test.o \
   -lnetcdf_c++ -lboost_system-mt -lnetcdf -lmpi -lm \
   -o bin/test
 
-# compile minimal.cpp
-mpicxx -c -I/usr/include -I/usr/local/include src/minimal.cpp -o src/minimal.o
-mpicxx -L/usr/lib -L/usr/local/lib src/minimal.o \
+# compile foo.cpp
+mpicxx -c -I/usr/include -I/usr/local/include src/foo.cpp -o src/foo.o
+mpicxx -L/usr/lib -L/usr/local/lib src/foo.o \
   -lmpi_cxx -lrepast_hpc-1.0.1 -ldl -lboost_mpi-mt -lboost_serialization-mt \
   -lnetcdf_c++ -lboost_system-mt -lnetcdf -lmpi -lm \
-  -o bin/minimal
+  -o bin/foo
