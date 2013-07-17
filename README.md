@@ -8,7 +8,7 @@ http://repast.sourceforge.net/repast_hpc.html
 Setup
 -----
 
-In addition to `cpp` and `make`, you need to install Boost and Open MPI. These
+In addition to `gcc` and `make`, you need to install Boost and Open MPI. These
 are the commands for Ubuntu:
 
     $ sudo apt-get install libboost-all-dev
