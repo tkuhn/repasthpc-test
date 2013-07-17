@@ -1,8 +1,16 @@
 #!/bin/bash
 
-INCLUDE="-I/usr/include -I/usr/local/include"
-LIB="-L/usr/lib -L/usr/local/lib"
-ARGS="-lmpi_cxx -lrepast_hpc-1.0.1 -ldl -lboost_mpi-mt -lboost_serialization-mt -lnetcdf_c++ -lboost_system-mt -lnetcdf -lmpi -lm"
+if [ "$INCLUDE" = "" ]; then
+  INCLUDE="-I/usr/include -I/usr/local/include"
+fi
+
+if [ "$LIB" = "" ]; then
+  LIB="-L/usr/lib -L/usr/local/lib"
+fi
+
+if [ "$ARGS" = "" ]; then
+  ARGS="-lmpi_cxx -lrepast_hpc-1.0.1 -ldl -lboost_mpi -lboost_serialization -lnetcdf_c++ -lboost_system -lboost_filesystem -lnetcdf -lmpi -lm"
+fi
 
 mkdir -p bin
 
