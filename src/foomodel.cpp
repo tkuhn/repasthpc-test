@@ -10,14 +10,22 @@ FooModel::FooModel(const string& propsFile, int argc, char* argv[], mpi::communi
 	repast::RepastProcess* rp = repast::RepastProcess::instance();
 	rank = rp->rank();
 
-	vector<int> procDim;
-	procDim.push_back(1);
-	procDim.push_back(1);
+	sizeX = repast::strToInt(props.getProperty("size.x"));
+	sizeY = repast::strToInt(props.getProperty("size.y"));
 
-	Log4CL::instance()->get_logger("root").log(INFO, "Creating grid...");
+	divisionX = repast::strToInt(props.getProperty("division.x"));
+	divisionY = repast::strToInt(props.getProperty("division.y"));
+
+	vector<int> procDim;
+	procDim.push_back(divisionX);
+	procDim.push_back(divisionY);
+
+	stringstream m;
+	m << "Creating grid (" << sizeX << "," << sizeY << ")...";
+	Log4CL::instance()->get_logger("root").log(INFO, m.str());
 	grid = new repast::SharedGrids<FooAgent>::SharedWrappedGrid(
 			"grid ",
-			repast::GridDimensions(repast::Point<int>(10, 10)),
+			repast::GridDimensions(repast::Point<int>(sizeX, sizeY)),
 			procDim,
 			1,
 			world

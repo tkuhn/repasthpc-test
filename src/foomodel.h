@@ -22,6 +22,10 @@ class FooModel {
 
 private:
 	int rank;
+	int sizeX;
+	int sizeY;
+	int divisionX;
+	int divisionY;
 	repast::SharedContext<FooAgent> agents;
 	repast::SharedGrids<FooAgent>::SharedWrappedGrid* grid;
 	repast::Properties props;
