@@ -47,15 +47,15 @@ public:
 
 	void synchAgents();
 
-	FooAgent* createAgent(FooAgents& content);
+	FooAgent* createAgent(FooPackage content);
 
-	void createAgents(vector<FooAgents>& contents, vector<FooAgent*>& out);
+	void createAgents(vector<FooPackage>& contents, vector<FooAgent*>& out);
 
-	void provideContent(FooAgent* agent, vector<FooAgents>& out);
+	void provideContent(FooAgent* agent, vector<FooPackage>& out);
 
-	void provideContent(const repast::AgentRequest& request, vector<FooAgents>& out);
+	void provideContent(const repast::AgentRequest& request, vector<FooPackage>& out);
 
-	void updateAgent(const FooAgents& content);
+	void updateAgent(const FooPackage& content);
 };
 
 #endif // FOOMODEL_H_INCLUDED

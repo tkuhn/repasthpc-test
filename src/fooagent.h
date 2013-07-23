@@ -7,7 +7,7 @@
 
 using namespace std;
 
-struct FooAgents {
+struct FooPackage {
 
 	friend class boost::serialization::access;
 

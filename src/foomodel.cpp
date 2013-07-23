@@ -19,13 +19,17 @@ FooModel::FooModel(const string& propsFile, int argc, char* argv[], mpi::communi
 	dimX = sizeX / divisionX;
 	dimY = sizeY / divisionY;
 
+	vector<int> division;
+	division.push_back(divisionX);
+	division.push_back(divisionY);
+
 	stringstream m;
 	m << "Creating grid (" << sizeX << "," << sizeY << ")...";
 	Log4CL::instance()->get_logger("root").log(INFO, m.str());
 	grid = new repast::SharedGrids<FooAgent>::SharedWrappedGrid(
 			"grid ",
 			repast::GridDimensions(repast::Point<int>(sizeX, sizeY)),
-			vector<int>(divisionX, divisionY),
+			division,
 			1,
 			world
 		);
@@ -45,7 +49,7 @@ FooModel::FooModel(const string& propsFile, int argc, char* argv[], mpi::communi
 
 	Log4CL::instance()->get_logger("root").log(INFO, "Sync buffer...");
 	grid->initSynchBuffer(agents);
-	grid->synchBuffer<FooAgents>(agents, *this, *this);
+	grid->synchBuffer<FooPackage>(agents, *this, *this);
 
 }
 
@@ -57,7 +61,7 @@ void FooModel::init() {
 
 void FooModel::initSchedule() {
 	repast::ScheduleRunner& runner = repast::RepastProcess::instance()->getScheduleRunner();
-	runner.scheduleStop(3);
+	runner.scheduleStop(5);
 	runner.scheduleEvent(1, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor<FooModel>(this, &FooModel::step)));
 
 }
@@ -74,7 +78,7 @@ void FooModel::step() {
 			int ny = pos[1] + 1;
 			grid->moveTo(thisAgent->getId(), repast::Point<int>(nx, ny));
 			stringstream m;
-			m << "Moved " << thisAgent->getId() << " from " << pos[0] << "," << pos[1] << " to " << nx << "," << ny;
+			m << thisAgent->getId() << " moves from " << pos[0] << "," << pos[1] << " to " << nx << "," << ny;
 			Log4CL::instance()->get_logger("root").log(INFO, m.str());
 		}
 	}
@@ -84,43 +88,52 @@ void FooModel::step() {
 }
 
 void FooModel::synchAgents() {
-	repast::syncAgents<FooAgents>(*this, *this);
-	grid->synchBuffer<FooAgents>(agents, *this, *this);
+	Log4CL::instance()->get_logger("root").log(INFO, "Sync...");
+	repast::syncAgents<FooPackage>(*this, *this);
+	grid->initSynchBuffer(agents);
+	grid->synchBuffer<FooPackage>(agents, *this, *this);
+	repast::RepastProcess::instance()->syncAgentStatus<FooAgent,FooPackage>(agents, *this, *this);
+	grid->synchMove();
 }
 
-FooAgent* FooModel::createAgent(FooAgents& content) {
+FooAgent* FooModel::createAgent(FooPackage content) {
 	return new FooAgent(content.getId());
 }
 
-void FooModel::createAgents(vector<FooAgents>& contents, vector<FooAgent*>& out) {
-	for (vector<FooAgents>::iterator agent = contents.begin(); agent != contents.end(); ++agent) {
+void FooModel::createAgents(vector<FooPackage>& contents, vector<FooAgent*>& out) {
+	for (vector<FooPackage>::iterator agent = contents.begin(); agent != contents.end(); ++agent) {
 		out.push_back(new FooAgent(agent->getId()));
 	}
 }
 
-void FooModel::provideContent(FooAgent* agent, vector<FooAgents>& out) {
+void FooModel::provideContent(FooAgent* agent, vector<FooPackage>& out) {
 	repast::AgentId id = agent->getId();
-	FooAgents agents = { id.id(), id.startingRank(), id.agentType() };
+	FooPackage agents = { id.id(), id.startingRank(), id.agentType() };
 	out.push_back(agents);
 }
 
-void FooModel::provideContent(const repast::AgentRequest& request, vector<FooAgents>& out) {
+void FooModel::provideContent(const repast::AgentRequest& request, vector<FooPackage>& out) {
 	const vector<repast::AgentId>& ids = request.requestedAgents();
 	for (int i = 0, size = ids.size(); i < size; i++) {
 		repast::AgentId id = ids[i];
 
 		if (agents.contains(id)) {
 			FooAgent* fooagent = agents.getAgent(id);
-			FooAgents content = { id.id(), id.startingRank(), id.agentType() };
+			FooPackage content = { id.id(), id.startingRank(), id.agentType() };
 			out.push_back(content);
 		}
 	}
 }
 
-void FooModel::updateAgent(const FooAgents& content) {
+void FooModel::updateAgent(const FooPackage& content) {
 	repast::AgentId id = content.getId();
+
+	stringstream m;
+	m << "Update agent " << id;
+	Log4CL::instance()->get_logger("root").log(INFO, m.str());
 
 	if (agents.contains(id)) {
 		FooAgent* copy = agents.getAgent(id);
+		// ...
 	}
 }
