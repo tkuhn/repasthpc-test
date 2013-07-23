@@ -19,17 +19,13 @@ FooModel::FooModel(const string& propsFile, int argc, char* argv[], mpi::communi
 	dimX = sizeX / divisionX;
 	dimY = sizeY / divisionY;
 
-	vector<int> procDim;
-	procDim.push_back(divisionX);
-	procDim.push_back(divisionY);
-
 	stringstream m;
 	m << "Creating grid (" << sizeX << "," << sizeY << ")...";
 	Log4CL::instance()->get_logger("root").log(INFO, m.str());
 	grid = new repast::SharedGrids<FooAgent>::SharedWrappedGrid(
 			"grid ",
 			repast::GridDimensions(repast::Point<int>(sizeX, sizeY)),
-			procDim,
+			vector<int>(divisionX, divisionY),
 			1,
 			world
 		);
@@ -44,7 +40,7 @@ FooModel::FooModel(const string& propsFile, int argc, char* argv[], mpi::communi
 		repast::AgentId id(i, rank, 0);
 		fooagent = new FooAgent(id);
 		agents.addAgent(fooagent);
-		grid->moveTo(fooagent, repast::Point<int>(originX + i, originY + i));
+		grid->moveTo(fooagent->getId(), repast::Point<int>(originX + i, originY + i));
 	}
 
 	Log4CL::instance()->get_logger("root").log(INFO, "Sync buffer...");
@@ -76,10 +72,10 @@ void FooModel::step() {
 		if (grid->getLocation(thisAgent->getId(), pos)) {
 			int nx = pos[0] + 1;
 			int ny = pos[1] + 1;
+			grid->moveTo(thisAgent->getId(), repast::Point<int>(nx, ny));
 			stringstream m;
-			m << "Moving " << thisAgent->getId() << " from " << pos[0] << "," << pos[1] << " to " << nx << "," << ny;
+			m << "Moved " << thisAgent->getId() << " from " << pos[0] << "," << pos[1] << " to " << nx << "," << ny;
 			Log4CL::instance()->get_logger("root").log(INFO, m.str());
-			grid->moveTo(thisAgent, repast::Point<int>(nx, ny));
 		}
 	}
 
