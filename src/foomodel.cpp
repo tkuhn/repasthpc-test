@@ -16,6 +16,9 @@ FooModel::FooModel(const string& propsFile, int argc, char* argv[], mpi::communi
 	divisionX = repast::strToInt(props.getProperty("division.x"));
 	divisionY = repast::strToInt(props.getProperty("division.y"));
 
+	dimX = sizeX / divisionX;
+	dimY = sizeY / divisionY;
+
 	vector<int> procDim;
 	procDim.push_back(divisionX);
 	procDim.push_back(divisionY);
@@ -32,13 +35,16 @@ FooModel::FooModel(const string& propsFile, int argc, char* argv[], mpi::communi
 		);
 	agents.addProjection(grid);
 
+	originX = grid->dimensions().origin().getX();
+	originY = grid->dimensions().origin().getY();
+
 	Log4CL::instance()->get_logger("root").log(INFO, "Creating agents...");
 	FooAgent* fooagent;
-	for (int i = 1; i < 5; i++) {
+	for (int i = 0; i < dimX && i < dimY; i++) {
 		repast::AgentId id(i, rank, 0);
 		fooagent = new FooAgent(id);
 		agents.addAgent(fooagent);
-		grid->moveTo(fooagent, repast::Point<int>(i*2, i*2));
+		grid->moveTo(fooagent, repast::Point<int>(originX + i, originY + i));
 	}
 
 	Log4CL::instance()->get_logger("root").log(INFO, "Sync buffer...");
@@ -55,7 +61,7 @@ void FooModel::init() {
 
 void FooModel::initSchedule() {
 	repast::ScheduleRunner& runner = repast::RepastProcess::instance()->getScheduleRunner();
-	runner.scheduleStop(5);
+	runner.scheduleStop(3);
 	runner.scheduleEvent(1, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor<FooModel>(this, &FooModel::step)));
 
 }
@@ -68,15 +74,22 @@ void FooModel::step() {
 	for (it = agents.localBegin(); it != agents.localEnd(); it++) {
 		thisAgent = it->get();
 		if (grid->getLocation(thisAgent->getId(), pos)) {
+			int nx = pos[0] + 1;
+			int ny = pos[1] + 1;
 			stringstream m;
-			m << "Handling " << thisAgent->getId() << " at position " << pos[0] << "," << pos[1];
+			m << "Moving " << thisAgent->getId() << " from " << pos[0] << "," << pos[1] << " to " << nx << "," << ny;
 			Log4CL::instance()->get_logger("root").log(INFO, m.str());
+			grid->moveTo(thisAgent, repast::Point<int>(nx, ny));
 		}
 	}
+
+	synchAgents();
 
 }
 
 void FooModel::synchAgents() {
+	repast::syncAgents<FooAgents>(*this, *this);
+	grid->synchBuffer<FooAgents>(agents, *this, *this);
 }
 
 FooAgent* FooModel::createAgent(FooAgents& content) {

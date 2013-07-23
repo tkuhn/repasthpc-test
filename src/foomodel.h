@@ -26,6 +26,10 @@ private:
 	int sizeY;
 	int divisionX;
 	int divisionY;
+	int dimX;
+	int dimY;
+	int originX;
+	int originY;
 	repast::SharedContext<FooAgent> agents;
 	repast::SharedGrids<FooAgent>::SharedWrappedGrid* grid;
 	repast::Properties props;
